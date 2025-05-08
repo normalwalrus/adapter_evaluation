@@ -28,13 +28,14 @@ lang = 'Hindi'
 task = 'transcribe'
 
 eval_metric = 'wer'
-metric = evaluate.load(eval_metric)
 output_filepath = f"outputs/whisper_GV_LoRA_15epochs_{lang}_0.00001lr_32r_run.txt"
 
 batch_size = 8
 ###############################################################################################################################################
 
 SAMPLING_RATE = 16000
+metric = evaluate.load(eval_metric)
+
 def read_audio(batch, path_to_data_folder):
 
     filepath = path_to_data_folder + batch['audio_filepath']
