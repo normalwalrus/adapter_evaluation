@@ -1,0 +1,25 @@
+services:
+  whisper_lora_testing:
+    stdin_open: true
+    tty: true
+    container_name: whisper_lora_testing
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    volumes:
+      - $PWD:/adpt-test
+      - /home/digitalhub/Desktop/pretrained_models:/adpt-test/pretrained_models
+      - /home/digitalhub/Desktop/data:/adpt-test/data
+      - /home/digitalhub/Desktop/ian_projects/MALT/new_testing/checkpoints:/adpt-test/checkpoints
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    shm_size: 16gb
