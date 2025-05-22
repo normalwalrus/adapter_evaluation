@@ -5,6 +5,7 @@ file
 
 import gc
 import json
+import logging
 import os
 import re
 
@@ -25,6 +26,9 @@ from transformers import (
 )
 
 from utils.data_collator import DataCollatorSpeechSeq2SeqWithPadding
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)
 
 ################################################## EDIT HERE #################################################################################
 checkpoint_filepath = (
@@ -137,7 +141,9 @@ def lora_eval():
         base_model_path, language=lang, task=task
     )
     model.eval()
-    for _, batch in enumerate(tqdm(eval_dataloader)):
+    references_proc = []
+    predictions_proc = []
+    for batch in tqdm(eval_dataloader):
         with torch.cuda.amp.autocast():
             with torch.no_grad():
                 generated_tokens = (
@@ -160,7 +166,6 @@ def lora_eval():
 
                 pred_str_processed = [filter_string(x) for x in decoded_preds]
                 label_str_processed = [filter_string(x) for x in decoded_labels]
-                print(batch)
                 for pred, ref, pred_proc, ref_proc, path in zip(
                     decoded_preds,
                     decoded_labels,
@@ -184,13 +189,16 @@ def lora_eval():
                             )
                             + "\n"
                         )
+                    references_proc.append(ref_proc)
+                    predictions_proc.append(pred_proc)
 
         del generated_tokens, labels, batch
         gc.collect()
+    wer_overall = jiwer.wer(reference=references_proc, hypothesis=predictions_proc)
+    logging.info("[Overall WER]: %s", round(wer_overall, 3))
 
-
-with torch.no_grad():
-    torch.cuda.empty_cache()
+    with torch.no_grad():
+        torch.cuda.empty_cache()
 
 
 if __name__ == "__main__":
