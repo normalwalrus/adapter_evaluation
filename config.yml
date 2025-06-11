@@ -1,0 +1,13 @@
+eval:
+  path_to_checkpoints: "/adpt-test/checkpoints/YODAS/"  # NOTE: This is the path to the folder containing all the adapter checkpoints
+  path_to_base_model: '/adpt-test/pretrained_models/whisper-large-v3-multilingual-50h/checkpoint-13616'
+  path_to_test_data: "/adpt-test/data/YODAS/hi000/"
+  name_of_test_manifest: "test_manifest.json"
+  name_of_output_file: ""
+
+  lang: "Hindi"
+  task: "transcribe"
+
+  eval_metric: "wer"
+  batch_size: 8
+  checkpoint_chosen: "checkpoint-7716" # Leave empty to run all checkpoints
