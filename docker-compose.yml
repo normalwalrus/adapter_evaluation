@@ -18,7 +18,7 @@ services:
       - $PWD:/adpt-test
       - /home/digitalhub/Desktop/pretrained_models:/adpt-test/pretrained_models
       - /home/digitalhub/Desktop/data:/adpt-test/data
-      - /home/digitalhub/Desktop/ian_projects/MALT/new_testing/checkpoints:/adpt-test/checkpoints
+      - /home/digitalhub/Desktop/pretrained_models/adapter_checkpoints:/adpt-test/checkpoints
     ulimits:
       memlock: -1
       stack: 67108864

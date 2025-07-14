@@ -53,8 +53,9 @@ BATCH_SIZE = config["eval"]["batch_size"]
 CHECKPOINT_CHOSEN = config["eval"]["checkpoint_chosen"]
 
 SAMPLING_RATE = 16000
-OUTPUT_FILEPATH = os.path.join("outputs", NAME_OF_OUTPUT_FILE)
+# OUTPUT_FILEPATH = os.path.join("outputs", NAME_OF_OUTPUT_FILE)
 
+print(config)
 
 def read_audio(batch, path_to_data_folder: str):
     ''' Takes in audio filepath in hugginface dataset to get signal '''
@@ -136,7 +137,7 @@ def lora_eval():
 
         print(f"For {checkpoint} : ")
         peft_model_id = os.path.join(PATH_TO_CHECKPOINTS, checkpoint)
-
+        
         model = WhisperForConditionalGeneration.from_pretrained(
             PATH_TO_BASE_MODEL,
             quantization_config=BitsAndBytesConfig(load_in_8bit=True),
@@ -144,6 +145,8 @@ def lora_eval():
         )
         model = PeftModel.from_pretrained(model, peft_model_id)
 
+        output_filepath = os.path.join("outputs", checkpoint+'.json')
+        
         processor = WhisperProcessor.from_pretrained(
             PATH_TO_BASE_MODEL, language=LANG, task=TASK
         )
@@ -177,6 +180,7 @@ def lora_eval():
                     label_str_processed = [
                         filter_string(x, lang=LANG) for x in decoded_labels
                     ]
+                    
                     for pred, ref, pred_proc, ref_proc, path in zip(
                         decoded_preds,
                         decoded_labels,
@@ -184,7 +188,7 @@ def lora_eval():
                         label_str_processed,
                         batch["audio_filepath"],
                     ):
-                        with open(OUTPUT_FILEPATH, "a", encoding="utf-8") as file:
+                        with open(output_filepath, "a", encoding="utf-8") as file:
                             file.write(
                                 json.dumps(
                                     {
@@ -192,12 +196,12 @@ def lora_eval():
                                         "prediction": pred,
                                         "reference": ref,
                                         "wer": jiwer.wer(
-                                            reference=pred_proc,
-                                            hypothesis=ref_proc,
+                                            reference=ref_proc,
+                                            hypothesis=pred_proc,
                                         ),
                                         "cer": jiwer.cer(
-                                            reference=pred_proc,
-                                            hypothesis=ref_proc,
+                                            reference=ref_proc,
+                                            hypothesis=pred_proc,
                                         ),
                                     },
                                     ensure_ascii=False,

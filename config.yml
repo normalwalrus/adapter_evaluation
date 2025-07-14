@@ -1,12 +1,12 @@
 eval:
-  path_to_checkpoints: "/adpt-test/checkpoints/MALT511/"  # NOTE: This is the path to the folder containing all the adapter checkpoints
+  path_to_checkpoints: "/adpt-test/checkpoints/YODAS/th/"  # NOTE: This is the path to the folder containing all the adapter checkpoints
   path_to_base_model: '/adpt-test/pretrained_models/whisper-large-v3-multilingual-50h/checkpoint-13616'
-  path_to_test_data: "/adpt-test/data/MALT_5-1-1/hi/"
+  path_to_test_data: "/adpt-test/data/MALT/th/test/"
   name_of_test_manifest: "test_manifest.json"
-  name_of_output_file: "MALT511_hi000_checkpoint-452"
+  name_of_output_file: "checkpoint-13412-th000-hr8"
 
-  lang: "hi" # Use ISO 639-1 convention 2 characters
+  lang: "th" # Use ISO 639-1 convention 2 characters
   task: "transcribe"
 
-  batch_size: 16
-  checkpoint_chosen: "checkpoint-452-hi" # Leave empty to run all checkpoints
+  batch_size: 8
+  checkpoint_chosen: '' # Leave empty to run all checkpoints

@@ -176,17 +176,21 @@ def lora_eval():
                     with open(output_filepath, "a", encoding="utf-8") as f:
                         f.write(
                             json.dumps(
-                                {
-                                    "audio_filepath": path,
-                                    "prediction": pred,
-                                    "reference": ref,
-                                    "wer": jiwer.wer(
-                                        reference=pred_proc,
-                                        hypothesis=ref_proc,
-                                    ),
-                                },
-                                ensure_ascii=False,
-                            )
+                                    {
+                                        "audio_filepath": path,
+                                        "prediction": pred,
+                                        "reference": ref,
+                                        "wer": jiwer.wer(
+                                            reference=ref_proc,
+                                            hypothesis=pred_proc,
+                                        ),
+                                        "cer": jiwer.cer(
+                                            reference=ref_proc,
+                                            hypothesis=pred_proc,
+                                        ),
+                                    },
+                                    ensure_ascii=False,
+                                )
                             + "\n"
                         )
                     references_proc.append(ref_proc)
